@@ -367,3 +367,55 @@ Model rekomendasi sistem berbasis TF-IDF dan *cosine similarity* berhasil member
 
 Hasil skor sebanding menunjukkan bahwa sistem dapat menemukan film dengan genre dan deskripsi yang sesuai dengan mood seperti bahagia, sedih, romantis, dan *excited*.
 """
+
+# ==========================================
+# BAGIAN ANTARMUKA USER (STREAMLIT UI)
+# ==========================================
+import streamlit as st
+
+st.title("🎬 MovRec: Sistem Rekomendasi Film Netflix")
+st.write("Selamat datang! Temukan film terbaik berdasarkan mood atau dapatkan rekomendasi acak hari ini.")
+
+# Menu Navigasi di Sidebar
+menu = st.sidebar.selectbox("Pilih Fitur", ["Rekomendasi Berdasarkan Mood", "Cari Film Mirip", "Movie of The Day & Random"])
+
+if menu == "Rekomendasi Berdasarkan Mood":
+    st.subheader("🎭 Cari Film Sesuai Mood Kamu")
+    pilihan_mood = st.selectbox("Bagaimana perasaanmu hari ini?", list(mood_keywords.keys()))
+    
+    if st.button("Cari Rekomendasi"):
+        hasil_mood = recommend_by_mood(pilihan_mood)
+        for index, row in hasil_mood.iterrows():
+            st.write(f"### 🍿 {row['title']}")
+            st.caption(f"**Genre:** {row['listed_in']}")
+            st.write(row['description'])
+            st.write("---")
+
+elif menu == "Cari Film Mirip":
+    st.subheader("🔍 Cari Film yang Mirip dengan Film Favoritmu")
+    judul_input = st.text_input("Ketikkan Judul Film Netflix (Contoh: 9, Transformers, dll):")
+    
+    if st.button("Cari Kembaran Film"):
+        if judul_input:
+            hasil_mirip = recommend_movies(judul_input)
+            if isinstance(hasil_mirip, str):
+                st.warning(hasil_mirip)
+            else:
+                st.dataframe(hasil_mirip)
+        else:
+            st.error("Silakan ketik judul film terlebih dahulu!")
+
+elif menu == "Movie of The Day & Random":
+    st.subheader("📅 Movie of The Day")
+    if st.button("Tampilkan Movie of The Day"):
+        motd = movie_of_the_day
+        st.info(f"### 🌟 {motd['title'].values[0]}")
+        st.write(motd['description'].values[0])
+        
+    st.write("---")
+    st.subheader("🎲 Random Movie Picker")
+    if st.button("Pilihkan Film Acak secara Random"):
+        acak = random_movie()
+        st.success(f"### 🎬 {acak['title'].values[0]}")
+        st.caption(f"**Genre:** {acak['listed_in'].values[0]}")
+        st.write(acak['description'].values[0])
