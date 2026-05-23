@@ -1,0 +1,22 @@
+# Data Processing
+import pandas as pd
+import numpy as np
+
+# Visualization
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Text Processing
+import re
+import string
+
+# Machine Learning
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Random Recommendation
+import random
+
+# Ignore Warning
+import warnings
+warnings.filterwarnings('ignore')
